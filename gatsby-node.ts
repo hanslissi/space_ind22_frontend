@@ -5,17 +5,21 @@ export const createPages: GatsbyNode["createPages"] = async ({
   graphql,
   actions,
 }) => {
+  const singleMajorTemplate = path.resolve(
+    "./src/templates/SingleMajor.tsx"
+  );
+
   const singleProjectTemplate = path.resolve(
     "./src/templates/SingleProject.tsx"
   );
 
   const { createPage } = actions;
-  const result: any = await graphql(`
-    query AllProjects {
-      allSanityProject {
+
+  const allMajorsResult: any = await graphql(`
+    query AllMajors {
+      allSanityMajor {
         nodes {
           id
-          major
           slug {
             current
           }
@@ -24,13 +28,45 @@ export const createPages: GatsbyNode["createPages"] = async ({
     }
   `);
 
-  if (result.errors) throw result.errors;
+  if (allMajorsResult.errors) throw allMajorsResult.errors;
 
-  const projects = result.data.allSanityProject.nodes;
+  const majors = allMajorsResult.data.allSanityMajor.nodes;
+
+  majors.forEach((major: any) => {
+    createPage({
+      path: `${major.slug.current}`,
+      component: singleMajorTemplate,
+      context: {
+        id: major.id,
+      },
+    });
+  });
+  // Project page creation
+  const allProjectsResult: any = await graphql(`
+    query AllProjects {
+      allSanityProject {
+        nodes {
+          id
+          major {
+            slug {
+              current
+            }
+          }
+          slug {
+            current
+          }
+        }
+      }
+    }
+  `);
+
+  if (allProjectsResult.errors) throw allProjectsResult.errors;
+
+  const projects = allProjectsResult.data.allSanityProject.nodes;
 
   projects.forEach((project: any) => {
     createPage({
-      path: `${project.major}/${project.slug.current}`,
+      path: `${project.major.slug.current}/${project.slug.current}`,
       component: singleProjectTemplate,
       context: {
         id: project.id,
