@@ -1,5 +1,6 @@
 import * as React from "react";
 import { graphql, type HeadFC, type PageProps } from "gatsby";
+import SEO from "../components/seo";
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   const {nodes: majors} = data.allSanityMajor;
@@ -21,7 +22,11 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
 
 export default IndexPage;
 
-export const Head: HeadFC = () => <title>Space Exhibition</title>;
+export const Head: HeadFC = () => {
+  return (
+    <SEO />
+  )
+};
 
 export const majorsQuery = graphql`
   query Majors {
