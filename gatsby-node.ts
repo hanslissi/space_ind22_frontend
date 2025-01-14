@@ -15,6 +15,7 @@ export const createPages: GatsbyNode["createPages"] = async ({
 
   const { createPage } = actions;
 
+  // Major page creation
   const allMajorsResult: any = await graphql(`
     query AllMajors {
       allSanityMajor {
@@ -41,6 +42,7 @@ export const createPages: GatsbyNode["createPages"] = async ({
       },
     });
   });
+
   // Project page creation
   const allProjectsResult: any = await graphql(`
     query AllProjects {
