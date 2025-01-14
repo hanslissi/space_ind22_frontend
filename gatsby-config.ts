@@ -3,7 +3,7 @@ import type { GatsbyConfig } from "gatsby";
 const config: GatsbyConfig = {
   siteMetadata: {
     title: `Space Exhibition 2025`,
-    description: `Explore innovative projects by bachelor students of Communication Design, Interaction Design, and Media Design at FH Joanneum. Space Exhibition 2025 showcases creativity and cutting-edge design from the next generation of designers.`,
+    description: `Explore innovative projects by bachelor students of Communication Design, Interaction Design, and Media Design at FH Joanneum Graz. Space Exhibition 2025 showcases creativity and cutting-edge design from the next generation of designers.`,
     siteUrl: `https://www.tbd.tbd`,
     image: `/default_social_image.png`
   },
