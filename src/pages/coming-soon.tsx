@@ -6,55 +6,113 @@ import imgInteractionDesign from "../images/SpacePlakatQ_interaction.min.jpg";
 import imgMediaDesign from "../images/SpacePlakatQ_media.min.jpg";
 import { StaticImage } from "gatsby-plugin-image";
 
-const ComingSoon = () => {
-  const [imgIdx, setImgIdx] = useState(0);
+const imgCommunicationDesignPath =
+  "../images/SpacePlakatQ_communication.min.jpg";
+const imgInteractionDesignPath = "../images/SpacePlakatQ_interaction.min.jpg";
+const imgMediaDesignPath = "../images/SpacePlakatQ_media.min.jpg";
 
-  const images = [
-    imgCommunicationDesign,
-    imgInteractionDesign,
-    imgMediaDesign,
+type Major = {
+  title: string;
+  imageComponent: JSX.Element;
+};
+
+const ComingSoon = () => {
+  const [majorIdx, setMajorIdx] = useState(0);
+
+  const majors: Major[] = [
+    {
+      title: "Communication",
+      imageComponent: (
+        <StaticImage
+          src={imgCommunicationDesignPath}
+          className="h-full"
+          alt="Communication Design (Orange Red) Poster"
+          layout="fullWidth"
+          placeholder="blurred"
+          quality={90}
+        />
+      ),
+    },
+    {
+      title: "Interaction",
+      imageComponent: (
+        <StaticImage
+          src={imgInteractionDesignPath}
+          className="h-full"
+          alt="Interaction Design (Green) Poster"
+          placeholder="blurred"
+          quality={90}
+        />
+      ),
+    },
+    {
+      title: "Media",
+      imageComponent: (
+        <StaticImage
+          src={imgMediaDesignPath}
+          className="h-full"
+          alt="Media Design (Blue) Poster"
+          layout="fullWidth"
+          placeholder="blurred"
+          quality={90}
+        />
+      ),
+    },
   ];
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log(images.length);
-      setImgIdx((prevIdx) => (prevIdx + 1) % images.length);
+      setMajorIdx((prevIdx) => (prevIdx + 1) % majors.length);
     }, 2000);
 
-    return () => clearInterval(intervalId); //This is important
+    return () => clearInterval(intervalId);
   }, []);
   return (
     <main>
       <div className="w-full h-[100vh] flex flex-col justify-end items-center bg-gray-dark text-white font-light">
         <div className="absolute top-0 left-0 w-full h-full">
-          {images.map((image, idx) => (
-            <img
+          {majors.map((major, idx) => (
+            <div
               key={idx}
-              src={image}
-              alt={`Space Exhibition Poster ${idx + 1}`}
-              className={`absolute object-cover select-none inset-0 w-full h-[100vh] transition-opacity duration-[1800ms] ${
-                idx === imgIdx ? "opacity-100 z-10" : "opacity-0 z-0"
+              className={`absolute inset-0 w-full h-full transition-opacity duration-[1800ms] ${
+                idx === majorIdx ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}
-            />
+            >
+              {major.imageComponent}
+            </div>
           ))}
         </div>
         <div className="w-full max-w-[550px] min-w-[300px] flex flex-col items-end sm:gap-4 gap-2 p-4 z-20">
-          <div className="sm:text-2xl text-xl w-full flex flex-row justify-between pr-16">
+          <div className="sm:text-2xl text-xl w-full flex flex-row sm:justify-between justify-center sm:pr-16">
             <div></div>
             <p className="leading-none">
-              Lendkai 17, 8020 Graz
+              Eröffnung: 29.01.2025, 19:00
               <br />
-              Eröffnung: 30.01 19:00
+              Lendhafen, Lendkai 17, 8020 Graz
             </p>
           </div>
-          <h2 className="sm:text-4xl text-2xl uppercase w-full flex flex-row justify-between">
-            <div>IND22</div>
-            <div>exhibition</div>
+          <h2 className="sm:text-2xl text-lg uppercase w-full flex flex-row justify-between">
+            <div className="">IND22</div>
+            <div className="relative w-full overflow-hidden">
+              {majors.map((major, idx) => (
+                <div
+                  key={idx}
+                  className={`absolute transform left-1/2 -translate-x-1/2 transition-all duration-[500ms] ${
+                    idx === majorIdx
+                      ? "opacity-100 translate-y-[0] z-10"
+                      : "opacity-0 translate-y-[100%] z-0"
+                  }`}
+                >
+                  {major.title}
+                </div>
+              ))}
+            </div>
+            <div className="text-right">exhibition</div>
           </h2>
           <div className="sm:text-6xl text-4xl w-full flex flex-row justify-between items-center gap-5">
-            <div>29.01</div>
+            <div>30.01</div>
             <div className="w-full h-1 bg-white"></div>
-            <div>31.01.2024</div>
+            <div>01.02.2025</div>
           </div>
         </div>
       </div>
