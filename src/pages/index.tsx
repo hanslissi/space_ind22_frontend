@@ -3,7 +3,7 @@ import { graphql, type HeadFC, type PageProps } from "gatsby";
 import SEO from "../components/seo";
 import SideNavigation, {
   SideNavItem,
-} from "../components/common/SideNavigation/SideNavigation";
+} from "../components/common/SideNavigation";
 import ProjectsSection from "../components/sections/home/ProjectsSection";
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {

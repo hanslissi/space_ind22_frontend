@@ -9,4 +9,8 @@
     @apply text-white;
     @apply bg-black;
   }
+
+  p {
+    @apply opacity-90;
+  }
 }
