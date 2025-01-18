@@ -1,21 +1,23 @@
 import * as React from "react";
 import { graphql, type HeadFC, type PageProps } from "gatsby";
 import SEO from "../components/seo";
+import SideNavigation, {
+  SideNavItem,
+} from "../components/common/SideNavigation/SideNavigation";
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
-  const {nodes: majors} = data.allSanityMajor;
+  const { nodes: majors } = data.allSanityMajor;
+
+  const navItems: SideNavItem[] = majors.map((major) => {
+    return {
+      title: major.title,
+      href: `#${major.slug?.current}`,
+    } as SideNavItem;
+  });
 
   return (
     <main>
-      <div className="w-full h-full flex flex-col gap-4 items-center justify-center">
-        {majors.map((major, i) => {
-          return (
-            <a key={i} href={major.slug?.current || '#'}>
-              {major.title}
-            </a>
-          )
-        })}
-      </div>
+      <SideNavigation items={navItems} />
     </main>
   );
 };
@@ -23,9 +25,7 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
 export default IndexPage;
 
 export const Head: HeadFC = () => {
-  return (
-    <SEO />
-  )
+  return <SEO />;
 };
 
 export const majorsQuery = graphql`
