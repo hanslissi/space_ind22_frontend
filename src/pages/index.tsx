@@ -5,6 +5,8 @@ import SideNavigation, {
   SideNavItem,
 } from "../components/common/SideNavigation";
 import ProjectsSection from "../components/sections/home/ProjectsSection";
+import BigExhibitionFooter from "../components/common/BigExhibitionFooter";
+import MiniExhibitionHeader from "../components/common/MiniExhibitionHeader";
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   const [activeSectionHref, setActiveSectionHref] = useState("");
@@ -53,12 +55,13 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
 
   return (
     <main>
+      <MiniExhibitionHeader fixed/>
       <SideNavigation items={navItems} activeSectionHref={activeSectionHref} />
       <section
-        className="h-[100vh] flex flex-col items-center justify-center"
+        className="h-[100vh] flex flex-col items-center justify-end"
         id="hero"
       >
-        Space
+        <BigExhibitionFooter />
       </section>
       {majors.map((major, idx) => {
         const filteredProjects = projects.filter(
@@ -85,7 +88,7 @@ export const Head: HeadFC = () => {
 
 export const majorsQuery = graphql`
   query Majors {
-    allSanityMajor(sort: {title: ASC}) {
+    allSanityMajor(sort: { title: ASC }) {
       nodes {
         title
         slug {
