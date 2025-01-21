@@ -10,6 +10,10 @@
     @apply bg-black;
   }
 
+  h1 {
+    @apply font-semibold text-5xl md:text-7xl lg:text-8xl xl:text-9xl;
+  }
+
   p {
     @apply opacity-90;
   }

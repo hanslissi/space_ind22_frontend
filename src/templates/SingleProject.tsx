@@ -3,6 +3,9 @@ import { graphql, HeadFC, PageProps } from "gatsby";
 import { GatsbyImage, StaticImage } from "gatsby-plugin-image";
 import SEO from "../components/seo";
 import MiniExhibitionHeader from "../components/common/MiniExhibitionHeader";
+import { PortableTextBlock } from "@portabletext/react";
+import PortableTextDisplay from "../components/common/PortableTextDisplay";
+import { getTextHalves } from "../util/textUtils";
 
 const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
   // Check if data.sanityProject exists before rendering the component
@@ -10,7 +13,7 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
     return <div>Project data is not available.</div>;
   }
 
-  const { title, major, contributors, content, seo } = data.sanityProject;
+  const { title, major, contributors, content } = data.sanityProject;
 
   const thumbnail = data.sanityProject.thumbnail?.asset?.gatsbyImageData;
 
@@ -18,16 +21,19 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
     <main>
       <section className="h-[100vh] flex flex-col items-center justify-between">
         <MiniExhibitionHeader />
-        <div>
-          {thumbnail && (
-            <GatsbyImage
-              className="w-[300px] h-[200px] object-cover rounded-3xl"
-              image={thumbnail}
-              alt={`${title} project thumbnail`}
-            />
-          )}
+        <div className="container mx-auto h-full flex flex-col gap-10 items-end justify-center">
+          <h1 className="w-full ">{title}</h1>
+          <div className="w-[50%] aspect-video">
+            {thumbnail && (
+              <GatsbyImage
+                image={thumbnail}
+                alt={`${title} project thumbnail`}
+                className="h-full w-full object-cover rounded-3xl"
+              />
+            )}
+          </div>
         </div>
-        <div>
+        <div className="pb-4">
           <StaticImage
             src="../images/icons/arrowDown.svg"
             alt="Little Arrow Pointing Down"
@@ -35,29 +41,23 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
         </div>
       </section>
       <section className="container mx-auto h-[100vh] flex flex-col justify-center">
-        <div className="flex flex-row justify-center">
-          <div className="w-full flex flex-col gap-3">
-            <h2 className="text-xs opacity-40">Studenten</h2>
+        <div className="flex flex-row justify-center gap-32">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-sm opacity-40">Studenten</h2>
             <ul>
-              {contributors?.map((contributor) => (
-                <li>
+              {contributors?.map((contributor, idx) => (
+                <li key={"contributor" + idx}>
                   <p>{contributor}</p>
                 </li>
               ))}
             </ul>
           </div>
           <div className="w-[50%] flex flex-col gap-3">
-            <h2 className="text-xs opacity-40">Projekt Beschreibung</h2>
-            <p>
-              Our short film follows the journey of a robot who has spent
-              decades searching for a habitable planet. Traveling from one world
-              to the next, he roams the vast expanse of space in his spaceship.
-              But just as he orbits a promising planet, disaster strikes—a grim
-              message arrives: his electricity contract has been cancelled. In a
-              frantic attempt to regain control, he struggles to maneuver the
-              spaceship, but the planet’s gravitational pull has already taken
-              hold, sealing his fate.
-            </p>
+            <h2 className="text-sm opacity-40">Projekt Beschreibung</h2>
+            {/** TODO: Really whack approach right now, only quick solution I found without completely ruining the query tyes */}
+            <PortableTextDisplay
+              value={content as unknown as PortableTextBlock[]}
+            />
           </div>
         </div>
       </section>
@@ -100,9 +100,7 @@ export const projectQuery = graphql`
           url
         }
       }
-      content {
-        _rawChildren(resolveReferences: { maxDepth: 5 })
-      }
+      content: _rawContent(resolveReferences: { maxDepth: 5 })
       seo {
         metaTitle
         metaDescription
