@@ -8,7 +8,7 @@ interface MiniExhibitionHeaderProps {
 const MiniExhibitionHeader = ({ fixed = false }: MiniExhibitionHeaderProps) => {
   return (
     <div
-      className={clsx("w-full flex flex-row justify-between p-4 uppercase", {
+      className={clsx("w-full flex flex-row justify-between p-4 uppercase z-50", {
         fixed: fixed,
       })}
     >
