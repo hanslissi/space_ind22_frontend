@@ -7,6 +7,8 @@ import SideNavigation, {
 import ProjectsSection from "../components/sections/home/ProjectsSection";
 import BigExhibitionFooter from "../components/common/BigExhibitionFooter";
 import MiniExhibitionHeader from "../components/common/MiniExhibitionHeader";
+import { ReactP5Wrapper } from "@p5-wrapper/react";
+import noiseInteractionSketch from "../sketches/TestSketch/NoiseInteractionSketch";
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   const [activeSectionHref, setActiveSectionHref] = useState("");
@@ -54,8 +56,13 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   }, [navItems]);
 
   return (
-    <main>
-      <MiniExhibitionHeader fixed/>
+    <main className="relative overflow-hidden">
+      {/** Background Noise Interaction Sketch */}
+      <div className="w-full h-full fixed">
+        <ReactP5Wrapper sketch={noiseInteractionSketch} />
+      </div>
+
+      <MiniExhibitionHeader fixed />
       <SideNavigation items={navItems} activeSectionHref={activeSectionHref} />
       <section
         className="h-[100vh] flex flex-col items-center justify-end"

@@ -44,3 +44,16 @@ export const createPages: GatsbyNode["createPages"] = async ({
     });
   });
 };
+
+export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({actions}) => {
+  actions.setWebpackConfig({
+    module: {
+      rules: [
+        {
+          test: /\.(vert|frag)$/,
+          use: 'raw-loader',
+        },
+      ],
+    },
+  });
+}
