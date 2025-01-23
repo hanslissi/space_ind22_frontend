@@ -21,8 +21,16 @@
 precision highp float;
 
 uniform vec2 u_resolution;// Resolution of the canvas (width, height)
+uniform vec2 u_scale;// Resolution of the canvas (width, height)
 uniform float u_time;// Time for animation or movement
 uniform float u_spread; // Spread of the noise ()
+uniform float u_evolution; // evolution of the noise
+uniform float u_intensity; // evolution of the noise
+
+uniform vec3 u_color1;
+uniform vec3 u_color2;
+uniform vec3 u_color3;
+uniform vec3 u_color4;
 
 vec4 mod289(vec4 x)
 {
@@ -56,7 +64,7 @@ vec2 fade(vec2 t){
 }
 
 // Classic Perlin noise
-float cnoise(vec2 P)
+float cnoise(vec2 P, float evolution)
 {
   vec4 Pi=floor(P.xyxy)+vec4(0.,0.,1.,1.);
   vec4 Pf=fract(P.xyxy)-vec4(0.,0.,1.,1.);
@@ -66,13 +74,12 @@ float cnoise(vec2 P)
   vec4 fx=Pf.xzxz;
   vec4 fy=Pf.yyww;
   
-  vec4 i=permute(permute(ix)+iy);
+  vec4 i=permute(permute(ix + evolution)+iy + evolution);
   
-  vec4 gx=fract(i*(1./41.))*2.-1.;
-  vec4 gy=abs(gx)-.5;
-  vec4 tx=floor(gx+.5);
-  gx=gx-tx;
-  
+  vec4 angle = fract(i * (1.0 / 41.0) + evolution) * 2.0 * 3.14159265359;
+  vec4 gx = cos(angle); // x-component of gradient vector
+  vec4 gy = sin(angle); // y-component of gradient vector
+
   vec2 g00=vec2(gx.x,gy.x);
   vec2 g10=vec2(gx.y,gy.y);
   vec2 g01=vec2(gx.z,gy.z);
@@ -223,14 +230,40 @@ vec3 srandom3(in vec3 p, const in float tileLength) {
 
 
 void main(){
-  vec2 uv=gl_FragCoord.xy/u_resolution.x; 
-  vec2 P=uv*2.;// Scale the noise
+  vec2 uv=(gl_FragCoord.xy/u_resolution.x); 
+  uv /= u_scale;
+  vec2 P=uv*2.5;// Scale the noise
   
-  float perlinNoise=cnoise(P);
-  float randomNoise = srandom(P);
+  float perlinNoise=cnoise(P, u_evolution/10000.)*2.;
+  float randomNoise = srandom(gl_FragCoord.xy);
   //float perlinNoise=pnoise(P+u_time);
   //float perlinNoise=snoise(P);
-  float noiseOutput = mix(perlinNoise, u_spread, 0.5); 
+  float noiseOutput = mix(perlinNoise, u_spread, 0.6); 
+  // noiseOutput = mix(noiseOutput, randomNoise, 0.15); 
+  // float noiseOutput = mix(perlinNoise, 0.5, 0.5); 
   vec4 myColor=vec4(noiseOutput,noiseOutput,noiseOutput,1.);
-  gl_FragColor=myColor;
+
+
+  vec3 color;
+  if (noiseOutput >= 0.8) {
+    // Red to Green gradient
+    color = mix(u_color2, u_color1, (noiseOutput - 0.8) / 0.2);
+  } else if (noiseOutput >= 0.65) {
+    // Green to Blue gradient
+    color = mix(u_color3, u_color2, (noiseOutput - 0.65) / 0.15);
+  } else if (noiseOutput >= 0.5) {
+    // Blue to Black gradient
+    color = mix(u_color4, u_color3, (noiseOutput - 0.5) / 0.15);
+  } else if (noiseOutput >= 0.0) {
+    color = mix(vec3(0.0, 0.0, 0.0), u_color4, (noiseOutput - 0.0) / 0.5);
+  } else {
+    // Black for noiseOutput < 0
+    color = vec3(0.0, 0.0, 0.0);
+  }
+
+  color = mix(color, vec3(randomNoise, randomNoise, randomNoise), 0.15);
+
+  gl_FragColor=vec4(color, 1.0);
+
+  // gl_FragColor=myColor;
 }
