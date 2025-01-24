@@ -234,7 +234,7 @@ void main(){
   uv /= u_scale;
   vec2 P=uv*2.5;// Scale the noise
   
-  float perlinNoise=cnoise(P, u_evolution/10000.)*2.;
+  float perlinNoise=cnoise(P, u_evolution/10000.)*u_intensity;
   float randomNoise = srandom(gl_FragCoord.xy);
   //float perlinNoise=pnoise(P+u_time);
   //float perlinNoise=snoise(P);

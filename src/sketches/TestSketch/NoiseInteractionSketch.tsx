@@ -29,14 +29,14 @@ const noiseInteractionSketch = (p5: P5CanvasInstance<NoiseInteractionSketchProps
     },
     {
       // Interaction Design
-      color1: [100, 184, 126],
+      color1: [210, 220, 120],
       color2: [223, 228, 138],
       color3: [239, 235, 130],
       color4: [34, 102, 110],
     },
     {
       // Media Design
-      color1: [50, 63, 130],
+      color1: [50, 63, 146],
       color2: [69, 64, 146],
       color3: [148, 156, 206],
       color4: [61, 103, 175],
@@ -74,7 +74,7 @@ const noiseInteractionSketch = (p5: P5CanvasInstance<NoiseInteractionSketchProps
 
     // Pass the mouse position to the scale uniform
     myShader.setUniform('u_scale', [
-      p5.map(lerpedMousepos.y, 0, p5.height, 1, 3),
+      p5.map(lerpedMousepos.y, 0, p5.height, 2, 3),
       p5.map(lerpedMousepos.x, 0, p5.width, 1, 1.5),
     ]);
 
@@ -84,7 +84,7 @@ const noiseInteractionSketch = (p5: P5CanvasInstance<NoiseInteractionSketchProps
     // Pass the mouse position as the spread intensity
     myShader.setUniform(
       'u_spread',
-      p5.map(p5.abs(lerpedMousepos.y - p5.height / 2), 0, p5.height / 2, 0.5, 1.5)
+      p5.map(lerpedMousepos.y, 0, p5.height, 0.5, 1.5)
     );
 
     // Pass the mouse position as the evolution
