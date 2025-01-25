@@ -20,8 +20,8 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
   return (
     <main>
       <section className="h-screen min-h-[700px] md:px-10 px-4 flex flex-col items-center justify-between">
-        <MiniExhibitionHeader className="px-0"/>
-        <div className="container mx-auto h-full flex flex-col lg:gap-10 gap-4 lg:items-end justify-center">
+        <MiniExhibitionHeader className="container px-0"/>
+        <div className="container h-full flex flex-col lg:gap-10 gap-4 lg:items-end justify-center">
           <h1 className="w-full ">{title}</h1>
           <div className="lg:w-[50%] w-full aspect-video">
             {thumbnail && (
