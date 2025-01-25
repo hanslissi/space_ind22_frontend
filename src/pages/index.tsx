@@ -15,7 +15,7 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   const mainScrollDivRef = useRef<HTMLDivElement | null>(null);
   const spaceMaskRef = useRef<HTMLDivElement | null>(null);
   const [activeSectionHref, setActiveSectionHref] = useState('');
-  const [activeSectionIdx, setActiveSectionIdx] = useState(0);
+  const [activeSectionIdx, setActiveSectionIdx] = useState(-1);
   const { scrollYProgress } = useScroll({
     container: mainScrollDivRef,
   });
