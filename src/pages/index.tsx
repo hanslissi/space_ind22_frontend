@@ -1,29 +1,42 @@
-import React, { act, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { graphql, type HeadFC, type PageProps } from 'gatsby';
 import SEO from '../components/seo';
-import SideNavigation, { SideNavItem } from '../components/common/SideNavigation';
-import ProjectsSection from '../components/sections/home/ProjectsSection';
-import BigExhibitionFooter from '../components/common/BigExhibitionFooter';
-import MiniExhibitionHeader from '../components/common/MiniExhibitionHeader';
 import { ReactP5Wrapper } from '@p5-wrapper/react';
 import noiseInteractionSketch from '../sketches/TestSketch/NoiseInteractionSketch';
 import imgSpaceTitle from '../images/sapce_full.png';
+import ProjectsSection from '../components/sections/home/ProjectsSection';
+import { map } from '../util/numUtils';
+import SideNavigation, { SideNavItem } from '../components/common/SideNavigation';
+import BigExhibitionFooter from '../components/common/BigExhibitionFooter';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import MiniExhibitionHeader from '../components/common/MiniExhibitionHeader';
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
+  const mainScrollDivRef = useRef<HTMLDivElement | null>(null);
+  const spaceMaskRef = useRef<HTMLDivElement | null>(null);
   const [activeSectionHref, setActiveSectionHref] = useState('');
   const [activeSectionIdx, setActiveSectionIdx] = useState(0);
+  const { scrollYProgress } = useScroll({
+    container: mainScrollDivRef,
+  });
   const { nodes: majors } = data.allSanityMajor;
   const { nodes: projects } = data.allSanityProject;
 
-  const navItems: SideNavItem[] = majors.map((major) => {
-    return {
-      title: major.title,
-      majorSlug: `${major.slug?.current}`,
-    } as SideNavItem;
-  });
-
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (e: Event) => {
+      /** Scrolling Animation for Hero Image */
+      let scrollPercentage =
+        (mainScrollDivRef.current?.scrollTop || 0) /
+        (mainScrollDivRef.current?.scrollHeight ?? 1);
+
+      const scale = map(scrollPercentage, 0, 0.25, 1, 30);
+      const opacity = map(scrollPercentage, 0, 0.25, 0, 1);
+
+      spaceMaskRef.current?.style.setProperty('--scale-value', scale.toString());
+
+      spaceMaskRef.current?.style.setProperty('--opacity-value', opacity.toString());
+
+      /** Updating Section highlights */
       const sections = navItems.map((item) => document.getElementById(item.majorSlug));
 
       sections.push(document.getElementById('hero'));
@@ -46,28 +59,37 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-
-    // Initial check in case the page is already scrolled
-    handleScroll();
+    mainScrollDivRef.current?.addEventListener('scroll', handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      mainScrollDivRef.current?.removeEventListener('scroll', handleScroll);
     };
-  }, [navItems]);
+  });
+
+  const navItems: SideNavItem[] = majors.map((major) => {
+    return {
+      title: major.title,
+      majorSlug: `${major.slug?.current}`,
+    } as SideNavItem;
+  });
+
+  const footerY = useTransform(scrollYProgress, [0, 0.25], ['0%', '100%']);
+  const headerY = useTransform(scrollYProgress, [0, 0.25], ['-100%', '0%']);
 
   return (
-    <main className="relative overflow-hidden">
-      {/** Background Noise Interaction Sketch */}
+    <main className="relative">
       <div
-        className="fixed"
+        className="fixed pointer-events-none -z-10"
         style={{
-          maskImage: `url(${imgSpaceTitle})`,
+          WebkitMaskImage: `url(${imgSpaceTitle})`,
+          maskImage: `url(${imgSpaceTitle}), linear-gradient(rgba(0,0,0,var(--opacity-value, 0)), rgba(0,0,0,var(--opacity-value, 0)))`,
           maskMode: 'alpha',
-          maskSize: 'auto 100%',
+          maskSize: 'auto calc(var(--scale-value, 1) * 100%)',
           maskRepeat: 'no-repeat',
           maskPosition: 'center',
+          transition: 'mask-size 0.1s',
         }}
+        ref={spaceMaskRef}
       >
         <ReactP5Wrapper
           sketch={noiseInteractionSketch}
@@ -75,24 +97,43 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
         />
       </div>
 
-      <MiniExhibitionHeader fixed />
       <SideNavigation items={navItems} activeSectionHref={activeSectionHref} />
-      <section className="h-[100vh] flex flex-col items-center justify-end" id="hero">
-        <BigExhibitionFooter />
-      </section>
-      {majors.map((major, idx) => {
-        const filteredProjects = projects.filter(
-          (project) => project.major?.slug?.current === major.slug?.current
-        );
+      <motion.div className="fixed w-full z-50" style={{ y: headerY }}>
+        <MiniExhibitionHeader />
+      </motion.div>
 
-        return (
-          <ProjectsSection
-            key={'projectSection' + idx}
-            majorSlug={`${major.slug?.current}`}
-            projects={filteredProjects}
-          />
-        );
-      })}
+      <div
+        className="relative h-screen snap-y snap-mandatory overflow-y-scroll"
+        ref={mainScrollDivRef}
+      >
+        {/** Hero Section*/}
+        <section
+          className="h-screen snap-start bg-gradient-to-t from-black-transparent-20 to-transparent"
+          id="hero"
+        >
+          <div className="fixed bottom-0 w-full">
+            <motion.div className="w-full flex justify-center" style={{ y: footerY }}>
+              <BigExhibitionFooter />
+            </motion.div>
+          </div>
+        </section>
+
+        {/** Majors Sections */}
+        {majors.map((major, idx) => {
+          const filteredProjects = projects.filter(
+            (project) => project.major?.slug?.current === major.slug?.current
+          );
+
+          return (
+            <ProjectsSection
+              key={'projectSection' + idx}
+              majorSlug={`${major.slug?.current}`}
+              projects={filteredProjects}
+              className="snap-start bg-black-transparent-20"
+            />
+          );
+        })}
+      </div>
     </main>
   );
 };
