@@ -230,11 +230,11 @@ vec3 srandom3(in vec3 p, const in float tileLength) {
 
 
 void main(){
-  vec2 uv=(gl_FragCoord.xy/u_resolution.x); 
+  vec2 uv=(gl_FragCoord.xy/u_resolution.xy); 
   uv /= u_scale;
   vec2 P=uv*2.5;// Scale the noise
   
-  float perlinNoise=cnoise(P, u_evolution/10000.)*u_intensity;
+  float perlinNoise=cnoise(P, u_evolution/10000.)*1.;
   float randomNoise = srandom(gl_FragCoord.xy);
   //float perlinNoise=pnoise(P+u_time);
   //float perlinNoise=snoise(P);
