@@ -84,7 +84,7 @@ const noiseInteractionSketch = (p5: P5CanvasInstance<NoiseInteractionSketchProps
     // Pass the mouse position as the spread intensity
     myShader.setUniform(
       'u_spread',
-      p5.map(lerpedMousepos.y, 0, p5.height, 0.5, 1.5)
+      p5.map(p5.abs(lerpedMousepos.y - p5.height/2), 0, p5.height / 2, 0.5, 1.0)
     );
 
     // Pass the mouse position as the evolution

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface BigExhibitionFooterProps {
   majors?: string[];
@@ -17,21 +17,24 @@ const BigExhibitionFooter = ({ majors, currentMajor }: BigExhibitionFooterProps)
         </p>
       </div>
       <h2 className="sm:text-2xl text-lg uppercase w-full flex flex-row justify-between">
-        <div className="">IND22</div>
+        <div>IND22</div>
         <div className="relative w-full overflow-hidden">
-          {majors &&
+          {majors ? (
             majors.map((major, idx) => (
               <div
                 key={idx}
                 className={`absolute transform left-1/2 -translate-x-1/2 transition-all duration-[500ms] ${
                   major === currentMajor
-                    ? "opacity-100 translate-y-[0] z-10"
-                    : "opacity-0 translate-y-[100%] z-0"
+                    ? 'opacity-100 translate-y-[0] z-10'
+                    : 'opacity-0 translate-y-[100%] z-0'
                 }`}
               >
                 {major}
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="text-center">FH Joanneum</div>
+          )}
         </div>
         <div className="text-right">exhibition</div>
       </h2>
