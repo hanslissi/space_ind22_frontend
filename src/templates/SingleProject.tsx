@@ -19,11 +19,11 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
 
   return (
     <main>
-      <section className="h-[100vh] flex flex-col items-center justify-between">
-        <MiniExhibitionHeader />
-        <div className="container mx-auto h-full flex flex-col gap-10 items-end justify-center">
+      <section className="h-screen min-h-[700px] md:px-10 px-4 flex flex-col items-center justify-between">
+        <MiniExhibitionHeader className="px-0"/>
+        <div className="container mx-auto h-full flex flex-col lg:gap-10 gap-4 lg:items-end justify-center">
           <h1 className="w-full ">{title}</h1>
-          <div className="w-[50%] aspect-video">
+          <div className="lg:w-[50%] w-full aspect-video">
             {thumbnail && (
               <GatsbyImage
                 image={thumbnail}
@@ -40,8 +40,8 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
           />
         </div>
       </section>
-      <section className="container mx-auto h-[100vh] flex flex-col justify-center">
-        <div className="flex flex-row justify-center gap-32">
+      <section className="container mx-auto md:px-10 px-4 min-h-fit h-screen flex flex-col justify-center">
+        <div className="flex lg:flex-row flex-col justify-center lg:gap-32 gap-16">
           <div className="flex flex-col gap-3">
             <h2 className="text-sm opacity-40">Studenten</h2>
             <ul>
@@ -52,7 +52,7 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
               ))}
             </ul>
           </div>
-          <div className="w-[50%] flex flex-col gap-3">
+          <div className="lg:w-[50%] w-full flex flex-col gap-3">
             <h2 className="text-sm opacity-40">Projekt Beschreibung</h2>
             {/** TODO: Really whack approach right now, only quick solution I found without completely ruining the query tyes */}
             <PortableTextDisplay

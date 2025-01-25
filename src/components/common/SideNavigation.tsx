@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import React from 'react';
 
 export type SideNavItem = {
@@ -29,8 +30,17 @@ const SideNavigation = ({ items, activeSectionHref }: SideNavigationProps) => {
   };
 
   return (
-    <nav className="fixed top-0 h-[100vh] w-fit flex flex-col justify-center z-50">
-      <div className="flex flex-row gap-3 text-2xl ml-14">
+    <motion.nav 
+    className="fixed top-0 md:h-screen md:w-fit h-fit w-full md:mt-0 mt-14 flex flex-col justify-center pointer-events-none z-50"
+    initial={{ x: '-100%' }}
+    animate={{ x: isActive ? 0 : '-100%' }}
+    transition={{ 
+      type: 'spring',
+      stiffness: 200,
+      damping: 30,
+    }}
+    >
+      <div className="flex flex-row gap-4 text-2xl md:ml-14 ml-4">
         <div className="flex flex-col py-[0.6em] justify-between">
           <div className="w-1 h-1 rounded-full bg-white opacity-80" />
           {rulerIntermediatePoints}
@@ -38,7 +48,7 @@ const SideNavigation = ({ items, activeSectionHref }: SideNavigationProps) => {
           {rulerIntermediatePoints}
           <div className="w-1 h-1 rounded-full bg-white opacity-80" />
         </div>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col md:gap-6 gap-4 pointer-events-auto">
           {items.map((item, idx) => {
             return (
               <button
@@ -54,7 +64,7 @@ const SideNavigation = ({ items, activeSectionHref }: SideNavigationProps) => {
           })}
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

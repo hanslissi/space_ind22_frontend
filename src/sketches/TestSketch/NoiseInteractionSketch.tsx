@@ -1,4 +1,4 @@
-import { P5CanvasInstance, Sketch, SketchProps } from '@p5-wrapper/react';
+import { P5CanvasInstance, SketchProps } from '@p5-wrapper/react';
 import vert from './baseVertexShader.vert';
 import frag from './noiseShader.frag';
 

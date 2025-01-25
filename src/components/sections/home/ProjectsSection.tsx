@@ -12,54 +12,26 @@ interface ProjectsSectionProps {
 
 const ProjectsSection = ({ majorSlug, projects, className }: ProjectsSectionProps) => {
   return (
-    <section id={majorSlug} className={className}>
-      <div className="container mx-auto h-screen flex flex-col items-end justify-center">
-        <div className="max-w-[80%] flex flex-row flex-wrap justify-center gap-12">
-          {projects.map((project, idx) => {
-            return (
-              <ProjectPreview
-                title={`${project.title}`}
-                slug={`${project.slug?.current}`}
-                thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
-              />
-            );
-          })}
-          {projects.map((project, idx) => {
-            return (
-              <ProjectPreview
-                title={`${project.title}`}
-                slug={`${project.slug?.current}`}
-                thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
-              />
-            );
-          })}
-          {projects.map((project, idx) => {
-            return (
-              <ProjectPreview
-                title={`${project.title}`}
-                slug={`${project.slug?.current}`}
-                thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
-              />
-            );
-          })}
-          {projects.map((project, idx) => {
-            return (
-              <ProjectPreview
-                title={`${project.title}`}
-                slug={`${project.slug?.current}`}
-                thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
-              />
-            );
-          })}
-          {projects.map((project, idx) => {
-            return (
-              <ProjectPreview
-                title={`${project.title}`}
-                slug={`${project.slug?.current}`}
-                thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
-              />
-            );
-          })}
+    <section id={majorSlug} className={clsx("h-screen md:pt-0 pt-40", className)}>
+      <div
+        className="h-full overflow-y-scroll scrollbar-hidden"
+        style={{
+          maskImage:
+            'linear-gradient(0deg, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0) 95%)',
+        }}
+      >
+        <div className="container mx-auto min-h-full flex flex-col items-end justify-center py-24">
+          <div className="md:max-w-[80%] w-full flex flex-row flex-wrap justify-center gap-12">
+            {projects.map((project, idx) => {
+              return (
+                <ProjectPreview
+                  title={`${project.title}`}
+                  slug={`${project.slug?.current}`}
+                  thumbnailImg={project.thumbnail?.asset?.gatsbyImageData}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
