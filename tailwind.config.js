@@ -11,7 +11,7 @@ module.exports = {
     extend: {
       colors: {
         "gray-dark": "#13141f",
-        "black-transparent-20": '#000000BB'
+        "black-transparent-20": '#00000088'
       },
       fontFamily: {
         sans: ['Geist', ...defaultTheme.fontFamily.sans]

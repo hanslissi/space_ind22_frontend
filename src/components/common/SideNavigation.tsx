@@ -54,7 +54,7 @@ const SideNavigation = ({ items, activeSectionHref }: SideNavigationProps) => {
               <button
                 key={'navLink' + idx}
                 onClick={() => handleScrollToSection(item.majorSlug)}
-                className={clsx('w-fit text-left opacity-40 hover:opacity-90', {
+                className={clsx('w-fit text-left transition-opacity duration-200 opacity-40 hover:opacity-90', {
                   'opacity-90': activeSectionHref === item.majorSlug,
                 })}
               >

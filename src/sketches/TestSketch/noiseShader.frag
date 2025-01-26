@@ -25,7 +25,8 @@ uniform vec2 u_scale;// Resolution of the canvas (width, height)
 uniform float u_time;// Time for animation or movement
 uniform float u_spread; // Spread of the noise ()
 uniform float u_evolution; // evolution of the noise
-uniform float u_intensity; // evolution of the noise
+uniform float u_intensity; // intensity of the noise
+uniform vec2 u_deltaPosition; // delta position of the noise
 
 uniform vec3 u_color1;
 uniform vec3 u_color2;
@@ -204,12 +205,14 @@ void main(){
   vec2 uv=(gl_FragCoord.xy/u_resolution.xy); 
 
   // make the circle noise really thin circles originated from the center, static
-  float circleNoise = circleNoise(uv, vec2(1., 1.), 0.005, u_resolution);
+  float circleNoise = circleNoise(uv, vec2(1., 1.), 0.004, u_resolution);
+
+  uv += u_deltaPosition / 4.;
 
   uv /= u_scale;
-  vec2 P=uv*2.5;// Scale the noise
+  vec2 P=uv*1.5;// Scale the noise
   
-  float perlinNoise=cnoise(P, u_evolution/10000.)*1.;
+  float perlinNoise=cnoise(P, u_evolution/10000.)*u_intensity;
   float randomNoise = srandom(gl_FragCoord.xy);
   //float perlinNoise=pnoise(P+u_time);
   //float perlinNoise=snoise(P);
