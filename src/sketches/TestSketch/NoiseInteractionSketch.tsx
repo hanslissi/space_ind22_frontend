@@ -74,7 +74,7 @@ const noiseInteractionSketch = (p5: P5CanvasInstance<NoiseInteractionSketchProps
 
     // Pass the mouse position to the scale uniform
     myShader.setUniform('u_scale', [
-      p5.map(lerpedMousepos.y, 0, p5.height, 1, 1.5),
+      p5.map(lerpedMousepos.y, 0, p5.height, 2, 3),
       p5.map(lerpedMousepos.x, 0, p5.width, 1, 1.5),
     ]);
 

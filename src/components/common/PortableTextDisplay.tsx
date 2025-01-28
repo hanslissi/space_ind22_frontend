@@ -23,7 +23,7 @@ const components: PortableTextComponents = {
       const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined
       return (
         <a href={value.href} rel={rel} className="underline">
-            {children} 🔗
+            {children}
         </a>
       )
     }

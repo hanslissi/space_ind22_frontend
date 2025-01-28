@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { graphql, type HeadFC, type PageProps } from 'gatsby';
 import SEO from '../components/seo';
-import { ReactP5Wrapper } from '@p5-wrapper/react';
 import noiseInteractionSketch from '../sketches/TestSketch/NoiseInteractionSketch';
 import imgSpaceTitle from '../images/sapce_full.png';
 import ProjectsSection from '../components/sections/home/ProjectsSection';
@@ -10,6 +9,8 @@ import SideNavigation, { SideNavItem } from '../components/common/SideNavigation
 import BigExhibitionFooter from '../components/common/BigExhibitionFooter';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import MiniExhibitionHeader from '../components/common/MiniExhibitionHeader';
+import CopyrightFooter from '../components/common/CopyrightFooter';
+import P5WrapperComponent from '../components/common/DynamicReactP5Wrapper';
 
 const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   const mainScrollDivRef = useRef<HTMLDivElement | null>(null);
@@ -74,6 +75,7 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
   });
 
   const footerY = useTransform(scrollYProgress, [0, 0.25], ['0%', '100%']);
+  const footerInvertedY = useTransform(scrollYProgress, [0, 0.25], ['100%', '0%']);
   const headerY = useTransform(scrollYProgress, [0, 0.25], ['-100%', '0%']);
 
   return (
@@ -91,13 +93,19 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
         }}
         ref={spaceMaskRef}
       >
-        <ReactP5Wrapper
+        <P5WrapperComponent
           sketch={noiseInteractionSketch}
           currentColorIdx={activeSectionIdx}
         />
       </div>
 
       <SideNavigation items={navItems} activeSectionHref={activeSectionHref} />
+      <motion.div
+        className="fixed w-full bottom-0 right-0 z-50"
+        style={{ y: footerInvertedY }}
+      >
+        <CopyrightFooter className="bottom-0 right-0" />
+      </motion.div>
       <motion.div className="fixed w-full z-50" style={{ y: headerY }}>
         <MiniExhibitionHeader />
       </motion.div>

@@ -205,7 +205,7 @@ void main(){
   vec2 uv=(gl_FragCoord.xy/u_resolution.xy); 
 
   // make the circle noise really thin circles originated from the center, static
-  float circleNoise = circleNoise(uv, vec2(1., 1.), 0.004, u_resolution);
+  float circleNoise = circleNoise(uv, vec2(1., 1.), 0.005, u_resolution);
 
   uv += u_deltaPosition / 4.;
 
