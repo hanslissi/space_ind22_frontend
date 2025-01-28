@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+
+@layer base {
+  html {
+    @apply text-white;
+    @apply bg-black;
+  }
+
+  h1 {
+    @apply font-semibold text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl;
+    @apply opacity-90;
+  }
+
+  p {
+    @apply opacity-90;
+  }
+}
+
+
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hidden {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+}

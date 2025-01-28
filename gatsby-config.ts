@@ -2,18 +2,17 @@ import type { GatsbyConfig } from "gatsby";
 
 const config: GatsbyConfig = {
   siteMetadata: {
-    title: `Space IND22 Frontend`,
-    siteUrl: `https://www.yourdomain.tld`
+    title: `Space Exhibition 2025`,
+    description: `Explore innovative projects by bachelor students of Communication Design, Interaction Design, and Media Design at FH Joanneum Graz. Space Exhibition 2025 showcases creativity and cutting-edge design from the next generation of designers.`,
+    siteUrl: `https://www.tbd.tbd`,
+    image: `/default_social_image.png`
   },
-  // More easily incorporate content into your pages through automatic TypeScript type generation and better GraphQL IntelliSense.
-  // If you use VSCode you can also use the GraphQL plugin
-  // Learn more at: https://gatsby.dev/graphql-typegen
   graphqlTypegen: true,
   plugins: [{
     resolve: 'gatsby-source-sanity',
     options: {
       "projectId": "962k8imr",
-      "dataset": ""
+      "dataset": "production"
     }
   }, "gatsby-plugin-image", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-postcss"]
 };

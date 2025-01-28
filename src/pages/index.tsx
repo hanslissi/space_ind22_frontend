@@ -1,193 +1,188 @@
-import * as React from "react"
-import type { HeadFC, PageProps } from "gatsby"
+import React, { useEffect, useRef, useState } from 'react';
+import { graphql, type HeadFC, type PageProps } from 'gatsby';
+import SEO from '../components/seo';
+import noiseInteractionSketch from '../sketches/TestSketch/NoiseInteractionSketch';
+import imgSpaceTitle from '../images/sapce_full.png';
+import ProjectsSection from '../components/sections/home/ProjectsSection';
+import { map } from '../util/numUtils';
+import SideNavigation, { SideNavItem } from '../components/common/SideNavigation';
+import BigExhibitionFooter from '../components/common/BigExhibitionFooter';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import MiniExhibitionHeader from '../components/common/MiniExhibitionHeader';
+import CopyrightFooter from '../components/common/CopyrightFooter';
+import P5WrapperComponent from '../components/common/DynamicReactP5Wrapper';
 
-const pageStyles = {
-  color: "#232129",
-  padding: 96,
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-}
-const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  maxWidth: 320,
-}
-const headingAccentStyles = {
-  color: "#663399",
-}
-const paragraphStyles = {
-  marginBottom: 48,
-}
-const codeStyles = {
-  color: "#8A6534",
-  padding: 4,
-  backgroundColor: "#FFF4DB",
-  fontSize: "1.25rem",
-  borderRadius: 4,
-}
-const listStyles = {
-  marginBottom: 96,
-  paddingLeft: 0,
-}
-const doclistStyles = {
-  paddingLeft: 0,
-}
-const listItemStyles = {
-  fontWeight: 300,
-  fontSize: 24,
-  maxWidth: 560,
-  marginBottom: 30,
-}
+const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
+  const mainScrollDivRef = useRef<HTMLDivElement | null>(null);
+  const spaceMaskRef = useRef<HTMLDivElement | null>(null);
+  const [activeSectionHref, setActiveSectionHref] = useState('');
+  const [activeSectionIdx, setActiveSectionIdx] = useState(-1);
+  const { scrollYProgress } = useScroll({
+    container: mainScrollDivRef,
+  });
+  const { nodes: majors } = data.allSanityMajor;
+  const { nodes: projects } = data.allSanityProject;
 
-const linkStyle = {
-  color: "#8954A8",
-  fontWeight: "bold",
-  fontSize: 16,
-  verticalAlign: "5%",
-}
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      /** Scrolling Animation for Hero Image */
+      let scrollPercentage =
+        (mainScrollDivRef.current?.scrollTop || 0) /
+        (mainScrollDivRef.current?.scrollHeight ?? 1);
 
-const docLinkStyle = {
-  ...linkStyle,
-  listStyleType: "none",
-  display: `inline-block`,
-  marginBottom: 24,
-  marginRight: 12,
-}
+      const scale = map(scrollPercentage, 0, 0.25, 1, 30);
+      const opacity = map(scrollPercentage, 0, 0.25, 0, 1);
 
-const descriptionStyle = {
-  color: "#232129",
-  fontSize: 14,
-  marginTop: 10,
-  marginBottom: 0,
-  lineHeight: 1.25,
-}
+      spaceMaskRef.current?.style.setProperty('--scale-value', scale.toString());
 
-const docLinks = [
-  {
-    text: "TypeScript Documentation",
-    url: "https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/",
-    color: "#8954A8",
-  },
-  {
-    text: "GraphQL Typegen Documentation",
-    url: "https://www.gatsbyjs.com/docs/how-to/local-development/graphql-typegen/",
-    color: "#8954A8",
-  }
-]
+      spaceMaskRef.current?.style.setProperty('--opacity-value', opacity.toString());
 
-const badgeStyle = {
-  color: "#fff",
-  backgroundColor: "#088413",
-  border: "1px solid #088413",
-  fontSize: 11,
-  fontWeight: "bold",
-  letterSpacing: 1,
-  borderRadius: 4,
-  padding: "4px 6px",
-  display: "inline-block",
-  position: "relative" as "relative",
-  top: -2,
-  marginLeft: 10,
-  lineHeight: 1,
-}
+      /** Updating Section highlights */
+      const sections = navItems.map((item) => document.getElementById(item.majorSlug));
 
-const links = [
-  {
-    text: "Tutorial",
-    url: "https://www.gatsbyjs.com/docs/tutorial/getting-started/",
-    description:
-      "A great place to get started if you're new to web development. Designed to guide you through setting up your first Gatsby site.",
-    color: "#E95800",
-  },
-  {
-    text: "How to Guides",
-    url: "https://www.gatsbyjs.com/docs/how-to/",
-    description:
-      "Practical step-by-step guides to help you achieve a specific goal. Most useful when you're trying to get something done.",
-    color: "#1099A8",
-  },
-  {
-    text: "Reference Guides",
-    url: "https://www.gatsbyjs.com/docs/reference/",
-    description:
-      "Nitty-gritty technical descriptions of how Gatsby works. Most useful when you need detailed information about Gatsby's APIs.",
-    color: "#BC027F",
-  },
-  {
-    text: "Conceptual Guides",
-    url: "https://www.gatsbyjs.com/docs/conceptual/",
-    description:
-      "Big-picture explanations of higher-level Gatsby concepts. Most useful for building understanding of a particular topic.",
-    color: "#0D96F2",
-  },
-  {
-    text: "Plugin Library",
-    url: "https://www.gatsbyjs.com/plugins",
-    description:
-      "Add functionality and customize your Gatsby site or app with thousands of plugins built by our amazing developer community.",
-    color: "#8EB814",
-  },
-  {
-    text: "Build and Host",
-    url: "https://www.gatsbyjs.com/cloud",
-    badge: true,
-    description:
-      "Now you’re ready to show the world! Give your Gatsby site superpowers: Build and host on Gatsby Cloud. Get started for free!",
-    color: "#663399",
-  },
-]
+      sections.push(document.getElementById('hero'));
 
-const IndexPage: React.FC<PageProps> = () => {
+      let activeId = '';
+      let activeIdx = 0;
+      sections.forEach((section, idx) => {
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+            activeId = section.id;
+            activeIdx = idx;
+          }
+        }
+      });
+
+      if (activeId) {
+        setActiveSectionHref(activeId);
+        setActiveSectionIdx(activeId === 'hero' ? -1 : activeIdx);
+      }
+    };
+
+    mainScrollDivRef.current?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      mainScrollDivRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  });
+
+  const navItems: SideNavItem[] = majors.map((major) => {
+    return {
+      title: major.title,
+      majorSlug: `${major.slug?.current}`,
+    } as SideNavItem;
+  });
+
+  const footerY = useTransform(scrollYProgress, [0, 0.25], ['0%', '100%']);
+  const footerInvertedY = useTransform(scrollYProgress, [0, 0.25], ['100%', '0%']);
+  const headerY = useTransform(scrollYProgress, [0, 0.25], ['-100%', '0%']);
+
   return (
-    <main style={pageStyles}>
-      <h1 style={headingStyles}>
-        Congratulations
-        <br />
-        <span style={headingAccentStyles}>— you just made a Gatsby site! 🎉🎉🎉</span>
-      </h1>
-      <p style={paragraphStyles}>
-        Edit <code style={codeStyles}>src/pages/index.tsx</code> to see this page
-        update in real-time. 😎
-      </p>
-      <ul style={doclistStyles}>
-        {docLinks.map(doc => (
-          <li key={doc.url} style={docLinkStyle}>
-            <a
-              style={linkStyle}
-              href={`${doc.url}?utm_source=starter&utm_medium=ts-docs&utm_campaign=minimal-starter-ts`}
-            >
-              {doc.text}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <ul style={listStyles}>
-        {links.map(link => (
-          <li key={link.url} style={{ ...listItemStyles, color: link.color }}>
-            <span>
-              <a
-                style={linkStyle}
-                href={`${link.url}?utm_source=starter&utm_medium=start-page&utm_campaign=minimal-starter-ts`}
-              >
-                {link.text}
-              </a>
-              {link.badge && (
-                <span style={badgeStyle} aria-label="New Badge">
-                  NEW!
-                </span>
-              )}
-              <p style={descriptionStyle}>{link.description}</p>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <img
-        alt="Gatsby G Logo"
-        src="data:image/svg+xml,%3Csvg width='24' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2a10 10 0 110 20 10 10 0 010-20zm0 2c-3.73 0-6.86 2.55-7.75 6L14 19.75c3.45-.89 6-4.02 6-7.75h-5.25v1.5h3.45a6.37 6.37 0 01-3.89 4.44L6.06 9.69C7 7.31 9.3 5.63 12 5.63c2.13 0 4 1.04 5.18 2.65l1.23-1.06A7.959 7.959 0 0012 4zm-8 8a8 8 0 008 8c.04 0 .09 0-8-8z' fill='%23639'/%3E%3C/svg%3E"
-      />
+    <main className="relative">
+      <div
+        className="fixed pointer-events-none -z-10"
+        style={{
+          WebkitMaskImage: `url(${imgSpaceTitle})`,
+          maskImage: `url(${imgSpaceTitle}), linear-gradient(rgba(0,0,0,var(--opacity-value, 0)), rgba(0,0,0,var(--opacity-value, 0)))`,
+          maskMode: 'alpha',
+          maskSize: 'auto calc(var(--scale-value, 1) * 100%)',
+          maskRepeat: 'no-repeat',
+          maskPosition: 'center',
+          transition: 'mask-size 0.1s',
+        }}
+        ref={spaceMaskRef}
+      >
+        <P5WrapperComponent
+          sketch={noiseInteractionSketch}
+          currentColorIdx={activeSectionIdx}
+        />
+      </div>
+
+      <SideNavigation items={navItems} activeSectionHref={activeSectionHref} />
+      <motion.div
+        className="fixed w-full bottom-0 right-0 z-50"
+        style={{ y: footerInvertedY }}
+      >
+        <CopyrightFooter className="bottom-0 right-0" />
+      </motion.div>
+      <motion.div className="fixed w-full z-50" style={{ y: headerY }}>
+        <MiniExhibitionHeader />
+      </motion.div>
+
+      <div
+        className="relative h-screen snap-y snap-mandatory overflow-y-scroll"
+        ref={mainScrollDivRef}
+      >
+        {/** Hero Section*/}
+        <section
+          className="h-screen snap-start bg-gradient-to-t from-black-transparent-20 to-transparent"
+          id="hero"
+        >
+          <div className="fixed bottom-0 w-full">
+            <motion.div className="w-full flex justify-center" style={{ y: footerY }}>
+              <BigExhibitionFooter />
+            </motion.div>
+          </div>
+        </section>
+
+        {/** Majors Sections */}
+        {majors.map((major, idx) => {
+          const filteredProjects = projects.filter(
+            (project) => project.major?.slug?.current === major.slug?.current
+          );
+
+          return (
+            <ProjectsSection
+              key={'projectSection' + idx}
+              majorSlug={`${major.slug?.current}`}
+              projects={filteredProjects}
+              className="snap-start bg-black-transparent-20"
+            />
+          );
+        })}
+      </div>
     </main>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;
 
-export const Head: HeadFC = () => <title>Home Page</title>
+export const Head: HeadFC = () => {
+  return <SEO />;
+};
+
+export const majorsQuery = graphql`
+  query Majors {
+    allSanityMajor(sort: { title: ASC }) {
+      nodes {
+        title
+        slug {
+          current
+        }
+      }
+    }
+    allSanityProject {
+      nodes {
+        title
+        slug {
+          current
+        }
+        major {
+          slug {
+            current
+          }
+        }
+        thumbnail {
+          asset {
+            gatsbyImageData(
+              width: 300
+              placeholder: DOMINANT_COLOR
+              formats: [AUTO, WEBP, AVIF]
+            )
+          }
+        }
+      }
+    }
+  }
+`;
