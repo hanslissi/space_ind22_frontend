@@ -119,7 +119,7 @@ const IndexPage = ({ data }: PageProps<Queries.MajorsQuery>) => {
           className="h-screen snap-start bg-gradient-to-t from-black-transparent-20 to-transparent"
           id="hero"
         >
-          <div className="fixed bottom-0 w-full">
+          <div className="fixed bottom-0 w-full pointer-events-none">
             <motion.div className="w-full flex justify-center" style={{ y: footerY }}>
               <BigExhibitionFooter />
             </motion.div>
