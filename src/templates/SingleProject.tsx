@@ -71,7 +71,7 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
 
               return (
                 <FullscreenImage
-                  key={'picture' + idx}
+                  key={'picture row 1 ' + idx}
                   image={picture?.asset?.gatsbyImageData}
                   alt={`${title} project picture ${idx}`}
                 />
@@ -87,9 +87,9 @@ const SingleProject = ({ data }: PageProps<Queries.SingleProjectQuery>) => {
 
               return (
                 <FullscreenImage
-                  key={'picture' + idx}
+                  key={'picture row 2 ' + idx}
                   image={picture?.asset?.gatsbyImageData}
-                  alt={`${title} project picture ${idx}`}
+                  alt={`${title} project picture ${Math.floor(idx + pictures.length / 2)}`}
                 />
               );
             })}
